@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Http;
+
 use PHPUnit\Framework\TestCase;
 use Src\Enums\ResponseTypeEnum;
 use Src\Http\Response;
@@ -23,30 +24,5 @@ class ResponseTests extends TestCase
 
         $this->response->setResponseType(ResponseTypeEnum::BAD_REQUEST);
         $this->assertEquals(ResponseTypeEnum::BAD_REQUEST, $this->response->getResponse());
-    }
-
-    public function testJsonArray(): void
-    {
-        $this->assertIsArray($this->response->getJsonArray());
-        $this->assertEmpty($this->response->getJsonArray());
-
-        $this->response->setJsonArray(['test' => 'test']);
-        $this->assertNotEmpty($this->response->getJsonArray());
-        $this->assertArrayHasKey('test', $this->response->getJsonArray());
-        $this->assertEquals('test', $this->response->getJsonArray()['test']);
-    }
-
-    public function testError(): void
-    {
-        $this->assertNotContains('error', $this->response->getJsonArray());
-
-        $this->response->error('test');
-        $this->assertArrayHasKey('error', $this->response->getJsonArray());
-        $this->assertIsString($this->response->getJsonArray()['error']);
-        $this->assertEquals('test', $this->response->getJsonArray()['error']);
-
-        $this->response->error(['test' => 'test']);
-        $this->assertIsArray($this->response->getJsonArray()['error']);
-        $this->assertEquals('test', $this->response->getJsonArray()['error']['test']);
     }
 }

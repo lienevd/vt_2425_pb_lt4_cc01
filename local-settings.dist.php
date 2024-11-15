@@ -15,7 +15,3 @@ const DB_PORT_TEST = "";
 
 // app specific
 const BASE_PATH = __DIR__;
-const PRIVATE_KEY = "";
-const PUBLIC_KEY = "";
-const libre_api_key = "";
-const libre_url = "";

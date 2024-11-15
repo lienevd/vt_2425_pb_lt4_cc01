@@ -23,13 +23,13 @@ class DB
     private function connect(): void
     {
         if (!$this->testing) {
-            $dsn = 'mysql:host=' . $_ENV['DB_HOST'] . ';port=' . $_ENV['DB_PORT'] . ';dbname=' . $_ENV['DB_NAME'] . ';charset=utf8';
-            $username = $_ENV['DB_USER'];
-            $password = $_ENV['DB_PASS'];
+            $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8';
+            $username = DB_USER;
+            $password = DB_PASS;
         } else {
-            $dsn = 'mysql:host=' . $_ENV['DB_HOST_TEST'] . ';port=' . $_ENV['DB_PORT_TEST'] . ';dbname=' . $_ENV['DB_NAME_TEST'] . ';charset=utf8';
-            $username = $_ENV['DB_USER_TEST'];
-            $password = $_ENV['DB_PASS_TEST'];
+            $dsn = 'mysql:host=' . DB_HOST_TEST . ';port=' . DB_PORT_TEST . ';dbname=' . DB_NAME_TEST . ';charset=utf8';
+            $username = DB_USER_TEST;
+            $password = DB_PASS_TEST;
         }
 
         try {
