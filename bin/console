@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+const BASE_PATH = __DIR__ . '/../';
+
+require_once BASE_PATH . '/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Bin\Commands\GenerateKeys;
+
+$application = new Application();
+$application->add(new GenerateKeys());
+$application->run();
