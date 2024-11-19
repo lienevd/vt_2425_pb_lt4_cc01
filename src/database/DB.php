@@ -5,6 +5,7 @@ namespace Src\Database;
 use PDO;
 use PDOException;
 use PDOStatement;
+use Src\Collections\Collection;
 
 class DB
 {
@@ -76,35 +77,56 @@ class DB
     }
 
     /**
+     * @throws \PDOException
      * @return bool
      */
     public function execute(): bool
     {
-        try {
-            return $this->statement->execute();
-        } catch (PDOException $e) {
-            echo 'Execution failed: ' . $e->getMessage();
+        return $this->statement->execute();
+    }
+
+    /**
+     * @throws \PDOException
+     * @return null|Collection[]
+     */
+    public function fetchAssoc(?Collection $collection = null): ?array
+    {
+        $this->execute();
+        $results = $this->statement->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($results)) {
+            return null;
         }
 
-        return false;
+        $collections = [];
+        foreach ($results as $row) {
+            $collections[] = $this->mapToCollection($collection, $row);
+        }
+        return $collections;
     }
 
     /**
-     * @return array
+     * @throws \PDOException
+     * @return null|Collection
      */
-    public function fetchAssoc(): array
+    public function fetchSingle(?Collection $collection = null): ?Collection
     {
         $this->execute();
-        return $this->statement->fetchAll(PDO::FETCH_ASSOC);
+        $results = $this->statement->fetch(PDO::FETCH_ASSOC);
+        return $results ?? $this->mapToCollection($collection, $results);
     }
 
     /**
-     * @return array
+     * @param \Src\Collections\Collection|null $collection
+     * @param array $items
+     * @return \Src\Collections\Collection
      */
-    public function fetchSingle(): array
+    private function mapToCollection(Collection $collection = null, array $items): Collection
     {
-        $this->execute();
-        return $this->statement->fetch(PDO::FETCH_ASSOC);
+        if ($collection === null) {
+            return new Collection($items);
+        }
+
+        return $collection->map($items);
     }
 
     /**
