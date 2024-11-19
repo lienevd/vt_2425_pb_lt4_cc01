@@ -5,6 +5,7 @@ namespace Src\Database;
 use PDO;
 use PDOException;
 use PDOStatement;
+use Src\Collections\AbstractCollection;
 use Src\Collections\Collection;
 
 class DB
@@ -87,9 +88,9 @@ class DB
 
     /**
      * @throws \PDOException
-     * @return null|Collection[]
+     * @return null|AbstractCollection[]
      */
-    public function fetchAssoc(?Collection $collection = null): ?array
+    public function fetchAssoc(?AbstractCollection $collection = null): ?array
     {
         $this->execute();
         $results = $this->statement->fetchAll(PDO::FETCH_ASSOC);
@@ -106,9 +107,9 @@ class DB
 
     /**
      * @throws \PDOException
-     * @return null|Collection
+     * @return null|AbstractCollection
      */
-    public function fetchSingle(?Collection $collection = null): ?Collection
+    public function fetchSingle(?AbstractCollection $collection = null): ?Collection
     {
         $this->execute();
         $results = $this->statement->fetch(PDO::FETCH_ASSOC);
@@ -116,11 +117,11 @@ class DB
     }
 
     /**
-     * @param \Src\Collections\Collection|null $collection
+     * @param \Src\Collections\AbstractCollection|null $collection
      * @param array $items
      * @return \Src\Collections\Collection
      */
-    private function mapToCollection(Collection $collection = null, array $items): Collection
+    private function mapToCollection(AbstractCollection $collection = null, array $items): Collection
     {
         if ($collection === null) {
             return new Collection($items);
