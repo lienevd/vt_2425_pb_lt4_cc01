@@ -88,9 +88,9 @@ class DB
 
     /**
      * @throws \PDOException
-     * @return null|AbstractCollection[]
+     * @return null|AbstractCollection
      */
-    public function fetchAssoc(?AbstractCollection $collection = null): ?array
+    public function fetchAssoc(?AbstractCollection $collection = null): ?AbstractCollection
     {
         $this->execute();
         $results = $this->statement->fetchAll(PDO::FETCH_ASSOC);
@@ -98,11 +98,7 @@ class DB
             return null;
         }
 
-        $collections = [];
-        foreach ($results as $row) {
-            $collections[] = $this->mapToCollection($collection, $row);
-        }
-        return $collections;
+        return $this->mapToCollection($collection, $results);
     }
 
     /**
@@ -113,7 +109,7 @@ class DB
     {
         $this->execute();
         $results = $this->statement->fetch(PDO::FETCH_ASSOC);
-        return $results ?? $this->mapToCollection($collection, $results);
+        return $results ?? $this->mapToCollection($collection, [$results]);
     }
 
     /**
@@ -121,7 +117,7 @@ class DB
      * @param array $items
      * @return \Src\Collections\Collection
      */
-    private function mapToCollection(AbstractCollection $collection = null, array $items): Collection
+    private function mapToCollection(AbstractCollection $collection = null, array $items): AbstractCollection
     {
         if ($collection === null) {
             return new Collection($items);

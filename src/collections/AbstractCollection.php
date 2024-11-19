@@ -4,13 +4,23 @@ namespace Src\Collections;
 
 abstract class AbstractCollection implements \IteratorAggregate
 {
+    protected const INT = 'integer';
+    protected const STR = 'string';
+    protected const FLOAT = 'float';
+    protected const BOOL = 'boolean';
+    protected const ARRAY = 'array';
+    protected const OBJ = 'object';
+    protected const NULL = 'null';
+
     private ?array $structure = null;
+    private ?array $modifiers = null;
 
     public function __construct(
-        private ?array $items = null
+        protected ?array $items = null
     ) {
         $this->configure();
         $this->validateItems();
+        $this->modify();
     }
 
     protected function configure(): void {}
@@ -27,8 +37,8 @@ abstract class AbstractCollection implements \IteratorAggregate
             return;
         }
 
-        foreach ($this->items as $name => $value) {
-            $this->validateItem($name, $value);
+        foreach ($this->items as $item) {
+            $this->validateItem($item);
         }
     }
 
@@ -40,26 +50,38 @@ abstract class AbstractCollection implements \IteratorAggregate
      * @return void
      * @throws \InvalidArgumentException if validation fails
      */
-    private function validateItem(string $name, $value): void
+    private function validateItem(array $item): void
     {
-        $type = $this->structure[$name];
-
-        if (class_exists($type)) {
-            if (!($value instanceof $type)) {
-                throw new \InvalidArgumentException("Value for '$name' must be an instance of $type.");
+        foreach ($item as $name => $value) {
+            if (!array_key_exists($name, $this->structure)) {
+                throw new \Exception("Invalid item key: $name");
             }
-            return;
-        }
-        $types = ['string', 'int', 'float', 'bool', 'array', 'object', 'null'];
-        if (in_array($type, $types, true)) {
-            settype($value, $type);
-            if (gettype($value) !== $type) {
-                throw new \InvalidArgumentException("Value for '$name' must be of type $type.");
-            }
-            return;
-        }
 
-        throw new \InvalidArgumentException("Invalid type '$type' for '$name'.");
+            $type = $this->structure[$name];
+
+            if (class_exists($type)) {
+                if (!($value instanceof $type)) {
+                    throw new \InvalidArgumentException("Value for '$name' must be an instance of $type.");
+                }
+                return;
+            }
+
+            $normalizedTypes = [
+                'int' => 'integer',
+                'bool' => 'boolean',
+                'float' => 'double',
+                'string' => 'string',
+                'array' => 'array',
+                'object' => 'object',
+                'null' => 'NULL'
+            ];
+
+            $expectedType = $normalizedTypes[$type] ?? $type;
+
+            if (gettype($value) !== $expectedType) {
+                throw new \InvalidArgumentException("Value for '$name' must be of type $type. Provided type: " . gettype($value));
+            }
+        }
     }
 
     /**
@@ -73,29 +95,38 @@ abstract class AbstractCollection implements \IteratorAggregate
         $this->structure = $structure;
     }
 
-    public function map(array $fromDB): self
+    /**
+     * @param array[] $jumbled
+     * @return \Src\Collections\AbstractCollection
+     */
+    public function map(array $jumbled): self
     {
         $items = [];
 
-        if ($this->structure !== null) {
-            foreach ($fromDB as $name => $value) {
+        foreach ($jumbled as $jumble) {
+            $item = [];
+
+            foreach ($jumble as $name => $value) {
                 if (!array_key_exists($name, $this->structure)) {
-                    throw new \Exception("Invalid array error does not match structure $name is not in structure");
+                    throw new \Exception("Invalid item key: $name");
                 }
-                $items[$name] = $value;
+
+                foreach ($this->structure as $structureName => $type) {
+                    if ($structureName === $name) {
+                        $item[$structureName] = $value;
+                    }
+                }
             }
+
+            $items[] = $item;
         }
 
-        return self::createInstance($items);
+        $this->items = $items;
+        $this->validateItems();
+
+        return $this->createInstance();
     }
 
-    /**
-     * Abstract method to create an instance of the concrete subclass.
-     *
-     * @param array|null $items
-     * @return static
-     */
-    abstract protected function createInstance(?array $items): static;
 
     /**
      * Returns an iterator for the collection items.
@@ -106,4 +137,104 @@ abstract class AbstractCollection implements \IteratorAggregate
     {
         return new \ArrayIterator($this->items ?? []);
     }
+
+    /**
+     * @param callable $callable
+     * @return array|null
+     */
+    public function filter(callable $callable): ?array
+    {
+        if ($this->items === null) {
+            return null;
+        }
+
+        $filteredItems = array_filter($this->items, $callable, ARRAY_FILTER_USE_BOTH);
+
+        return empty($filteredItems) ? null : $filteredItems;
+    }
+
+    /**
+     * @param array $item
+     * @return void
+     */
+    public function add(array $item): void
+    {
+        $this->validateItem($item);
+
+        $this->items[] = $item;
+    }
+
+    /**
+     * @param string $name
+     * @param callable $modifier
+     * @param bool $activeByDefault
+     * @throws \Exception
+     * @return void
+     */
+    protected function addModifier(string $name, callable $modifier, bool $activeByDefault = true): void
+    {
+        if (!array_key_exists($name, $this->structure)) {
+            throw new \Exception("Invalid item key: $name");
+        }
+
+        $this->modifiers[$name] = [
+            'modifier' => $modifier,
+            'active' => $activeByDefault
+        ];
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function activateModifier(string $name): self
+    {
+        $this->modifiers[$name]['active'] = true;
+        return $this->createInstance();
+    }
+
+    /**
+     * @param string $name
+     * @return \Src\Collections\AbstractCollection
+     */
+    public function deactivateModifier(string $name): self
+    {
+        $this->modifiers[$name]['active'] = false;
+
+        return $this->createInstance();
+    }
+
+    /**
+     * @throws \Exception
+     * @return void
+     */
+    public function modify(): void
+    {
+        if ($this->items === null) {
+            return;
+        }
+        foreach ($this->items as &$item) {
+            foreach ($item as $name => &$value) {
+                if (!isset($this->modifiers[$name])) {
+                    continue;
+                }
+
+                $active = $this->modifiers[$name]['active'];
+                if (!$active) {
+                    continue;
+                }
+                $modifier = $this->modifiers[$name]['modifier'];
+                $arguments = [$name => $name];
+                $value = call_user_func_array($modifier, $arguments);
+            }
+        }
+    }
+
+    /**
+     * Abstract method to create an instance of the concrete subclass.
+     *
+     * @param array|null $items
+     * @return static
+     */
+    abstract protected function createInstance(): self;
 }
