@@ -57,13 +57,14 @@ abstract class AbstractCollection implements \IteratorAggregate
                 throw new \Exception("Invalid item key: $name");
             }
 
-            $type = $this->structure[$name];
+            $type = $this->structure[$name]['type'];
+            $size = $this->structure[$name]['size'] ?? null;
 
             if (class_exists($type)) {
                 if (!($value instanceof $type)) {
                     throw new \InvalidArgumentException("Value for '$name' must be an instance of $type.");
                 }
-                return;
+                continue;
             }
 
             $normalizedTypes = [
@@ -81,8 +82,24 @@ abstract class AbstractCollection implements \IteratorAggregate
             if (gettype($value) !== $expectedType) {
                 throw new \InvalidArgumentException("Value for '$name' must be of type $type. Provided type: " . gettype($value));
             }
+
+            if ($size === null) {
+                return;
+            }
+
+            $isValid = match ($type) {
+                'string' => strlen($value) <= $size,
+                'int', 'float' => abs($value) <= $size,
+                default => true,
+            };
+
+            if (!$isValid) {
+                $typeDescription = $type === 'string' ? 'length' : 'size';
+                throw new \InvalidArgumentException("Value for '$name' exceeds the allowed $typeDescription of $size.");
+            }
         }
     }
+
 
     /**
      * Sets the structure for the collection.
