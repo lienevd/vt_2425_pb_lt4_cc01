@@ -105,11 +105,14 @@ class DB
      * @throws \PDOException
      * @return null|AbstractCollection
      */
-    public function fetchSingle(?AbstractCollection $collection = null): ?Collection
+    public function fetchSingle(?AbstractCollection $collection = null): ?AbstractCollection
     {
         $this->execute();
         $results = $this->statement->fetch(PDO::FETCH_ASSOC);
-        return $results ?? $this->mapToCollection($collection, [$results]);
+        if ($results === null) {
+            return null;
+        }
+        return $this->mapToCollection($collection, [$results]);
     }
 
     /**
@@ -122,7 +125,7 @@ class DB
         if ($collection === null) {
             return new Collection($items);
         }
-
+        $collection->setOption('array_single', true);
         return $collection->map($items);
     }
 

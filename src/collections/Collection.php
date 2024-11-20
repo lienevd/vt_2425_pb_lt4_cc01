@@ -4,8 +4,8 @@ namespace Src\Collections;
 
 class Collection extends AbstractCollection
 {
-    protected function createInstance(?array $items): self
+    protected function createInstance(): self
     {
-        return new self($items);
+        return $this;
     }
 }

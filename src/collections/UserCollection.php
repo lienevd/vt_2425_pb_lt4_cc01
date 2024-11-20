@@ -4,15 +4,19 @@ namespace Src\Collections;
 
 class UserCollection extends AbstractCollection
 {
+    /**
+     * @throws \Exception
+     * @return void
+     */
     protected function configure(): void
     {
         $this->setStructure([
-            'id' => self::INT,
-            'username' => self::STR,
-            'password' => self::STR
+            'id' => ['type' => self::INT],
+            'username' => ['type', self::STR, 'size' => 20],
+            'password' => ['type' => self::STR, 'size' => 256]
         ]);
         $this->addModifier('password', function (string $password): string {
-            return password_hash($password, PASSWORD_BCRYPT);
+            return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
         });
     }
 
@@ -46,9 +50,29 @@ class UserCollection extends AbstractCollection
      */
     public function getByUsername(string $username): ?array
     {
-        foreach ($this->items as $item) {
+        $items = $this->getNormalizedItems();
+        foreach ($items as $item) {
             if ($item['username'] === $username) {
-                return $item['username'];
+                $passwordHash = $item['password'];
+                $item['password'] = function (string $password) use ($passwordHash): bool {
+                    return password_verify($password, $passwordHash);
+                };
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    public function validatePwdGetUser(string $password): ?array
+    {
+        if (!$this->modifiers['password']['active']) {
+            return null;
+        }
+
+        foreach ($this->items as $item) {
+            if (password_verify($password, $item['password'])) {
+                return $item;
             }
         }
 

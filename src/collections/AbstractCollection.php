@@ -11,16 +11,64 @@ abstract class AbstractCollection implements \IteratorAggregate
     protected const ARRAY = 'array';
     protected const OBJ = 'object';
     protected const NULL = 'null';
-
     private ?array $structure = null;
-    private ?array $modifiers = null;
+    protected ?array $modifiers = null;
 
     public function __construct(
-        protected ?array $items = null
+        protected ?array $items = null,
+        protected ?array $options = null
     ) {
         $this->configure();
         $this->validateItems();
         $this->modify();
+
+        $this->handleOptions();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getItems(): ?array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function setOption(string $name, mixed $value): void
+    {
+        $this->options[$name] = $value;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getNormalizedItems(): array
+    {
+        if (isset($this->options['single_array']) && $this->options['single_array']) {
+            return [$this->items];
+        }
+
+        return $this->items;
+    }
+
+    private function handleOptions(): void
+    {
+        $options = $this->options;
+        if ($options === null) {
+            return;
+        }
+
+        if (isset($options['single_array']) && $options['single_array']) {
+            if (count($this->items) === 1) {
+                foreach ($this->items as $item) {
+                    $this->items = $item;
+                }
+            }
+        }
     }
 
     protected function configure(): void {}
@@ -112,6 +160,17 @@ abstract class AbstractCollection implements \IteratorAggregate
         $this->structure = $structure;
     }
 
+    public function normalize(array $item): array
+    {
+        $newItem = [];
+        foreach ($this->structure as $name => $settings) {
+            $itemValue = $item[$name];
+            $newItem[$name] = $itemValue;
+        }
+
+        return $newItem;
+    }
+
     /**
      * @param array[] $jumbled
      * @return \Src\Collections\AbstractCollection
@@ -140,6 +199,7 @@ abstract class AbstractCollection implements \IteratorAggregate
 
         $this->items = $items;
         $this->validateItems();
+        $this->handleOptions();
 
         return $this->createInstance();
     }
@@ -178,6 +238,11 @@ abstract class AbstractCollection implements \IteratorAggregate
     {
         $this->validateItem($item);
 
+        if (isset($this->options['single_array']) && $this->options['single_array']) {
+            $this->items = [$this->items];
+        }
+
+        $item = $this->normalize($item);
         $this->items[] = $item;
     }
 
@@ -241,7 +306,7 @@ abstract class AbstractCollection implements \IteratorAggregate
                     continue;
                 }
                 $modifier = $this->modifiers[$name]['modifier'];
-                $arguments = [$name => $name];
+                $arguments = [$name => $value];
                 $value = call_user_func_array($modifier, $arguments);
             }
         }
