@@ -4,8 +4,6 @@ namespace Src\Collections;
 
 use Src\Enums\PHPTypes;
 
-use function PHPSTORM_META\map;
-
 class Collection extends AbstractCollection
 {
     /**
