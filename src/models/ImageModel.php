@@ -4,7 +4,7 @@ namespace Src\Models;
 
 class ImageModel extends BaseModel
 {
-    public function AddImage($image, $category): bool
+    public function AddImage(string $image, string $category): bool
     {
         $this->db->query('INSERT INTO images (image, category) VALUES (:image, :category);');
 
