@@ -48,4 +48,4 @@ Thumbs.db
 *.mov
 *.wmv
 
-/local-settings.php
+local-settings.php
