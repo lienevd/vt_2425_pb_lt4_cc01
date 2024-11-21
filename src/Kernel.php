@@ -11,7 +11,9 @@ class Kernel
     public function run(): void
     {
         Router::get('/', [Controller::class, 'index']);
+        
         Router::get('/admin', [AdminController::class, 'index']);
+        Router::post('/admin', [AdminController::class, 'index']);
 
         $response = Router::run();
 
