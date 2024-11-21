@@ -19,12 +19,14 @@ final class AdminController
             $category = $_POST['category'];
             $image = $_FILES['image']['tmp_name'];
 
+            // Check of er wel een image EN category is ingevuld
             if (!isset($image) || !isset($category)) {
                 return new Response(ResponseTypeEnum::BAD_REQUEST, 'Vul alle velden in.');
             }
 
             $type = $_FILES['image']['type'];
 
+            // Check of het bestand wel een afbeelding is
             if (!in_array($type, $image_types)) {
                 return new Response(ResponseTypeEnum::BAD_REQUEST, 'Dit bestandstype is niet toegestaan.');
             }
@@ -34,6 +36,7 @@ final class AdminController
 
             $model = new ImageModel();
             $response = $model->AddImage($base64, $category);
+            
             return new Response($response, 'Afbeelding toegevoegd.');
 
         }
