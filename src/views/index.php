@@ -9,7 +9,7 @@
 <body>
     <!-- Start Screen -->
     <div id="start-screen" class="screen active">
-        <h1>Clue Catcher</h1>
+        <h1>Clue Capture</h1>
         <button id="start-game-button">Start spel</button>
     </div>
 
