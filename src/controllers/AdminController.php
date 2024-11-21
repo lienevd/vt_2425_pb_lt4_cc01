@@ -35,9 +35,9 @@ final class AdminController
             $base64 = base64_encode($imageData);
 
             $model = new ImageModel();
-            $response = $model->AddImage($base64, $category);
+            $response = $model->AddImage($base64, $category) ? ResponseTypeEnum::OK : ResponseTypeEnum::BAD_REQUEST;
             
-            return new Response($response, 'Afbeelding toegevoegd.');
+            return new Response($response);
 
         }
 

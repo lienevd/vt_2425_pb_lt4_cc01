@@ -6,7 +6,7 @@ use Src\Enums\ResponseTypeEnum;
 
 class ImageModel extends BaseModel
 {
-    public function AddImage($image, $category): ResponseTypeEnum
+    public function AddImage($image, $category): bool
     {
         $this->db->query('INSERT INTO images (image, category) VALUES (:image, :category);');
         $data = array();
@@ -15,8 +15,6 @@ class ImageModel extends BaseModel
             ['image', $image, \PDO::PARAM_LOB],
             ['category', $category, \PDO::PARAM_STR]
         ]);
-        $this->db->execute();
-
-        return ResponseTypeEnum::OK;
+        return $this->db->execute();
     }
 }

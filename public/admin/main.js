@@ -20,7 +20,7 @@ $(document).ready(function() {
                 console.log(data);
             },
             error: function(err) {
-                alert(err.responseText);
+                alert(`Error: ${err.responseText}`);
             }
         });
 
