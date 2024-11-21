@@ -2,15 +2,10 @@
 
 namespace Src\Collections;
 
+use Src\Enums\PHPTypes;
+
 abstract class AbstractCollection implements \IteratorAggregate
 {
-    protected const INT = 'integer';
-    protected const STR = 'string';
-    protected const FLOAT = 'float';
-    protected const BOOL = 'boolean';
-    protected const ARRAY = 'array';
-    protected const OBJ = 'object';
-    protected const NULL = 'null';
     private ?array $structure = null;
     protected ?array $modifiers = null;
 
@@ -106,31 +101,25 @@ abstract class AbstractCollection implements \IteratorAggregate
             $type = $this->structure[$name]['type'];
             $size = $this->structure[$name]['size'] ?? null;
 
-            if (class_exists($type)) {
+            if (
+                !$type instanceof PHPTypes &&
+                class_exists($type)
+            ) {
                 if (!($value instanceof $type)) {
                     throw new \InvalidArgumentException("Value for '$name' must be an instance of $type.");
                 }
                 continue;
             }
 
-            $normalizedTypes = [
-                'int' => 'integer',
-                'bool' => 'boolean',
-                'float' => 'double',
-                'string' => 'string',
-                'array' => 'array',
-                'object' => 'object',
-                'null' => 'NULL'
-            ];
-
-            $expectedType = $normalizedTypes[$type] ?? $type;
-
-            if (gettype($value) !== $expectedType) {
-                throw new \InvalidArgumentException("Value for '$name' must be of type $type. Provided type: " . gettype($value));
+            if (
+                gettype($value) !== $type->value &&
+                $type !== PHPTypes::MIXED
+            ) {
+                throw new \InvalidArgumentException("Value for '$name' must be of type $type->value. Provided type: " . gettype($value));
             }
 
             if ($size === null) {
-                return;
+                continue;
             }
 
             $isValid = match ($type) {
@@ -155,6 +144,13 @@ abstract class AbstractCollection implements \IteratorAggregate
      */
     protected function setStructure(array $structure): void
     {
+        foreach ($structure as $name => $options) {
+            $type = $options['type'];
+            if (!$type instanceof PHPTypes) {
+                throw new \Exception("Structure type must be of PHPTypes enum, on $name");
+            }
+        }
+
         $this->structure = $structure;
     }
 
@@ -201,6 +197,7 @@ abstract class AbstractCollection implements \IteratorAggregate
         $this->items = $items;
         $this->validateItems();
         $this->handleOptions();
+        $this->modify();
 
         return $this->getInstance();
     }
@@ -268,7 +265,7 @@ abstract class AbstractCollection implements \IteratorAggregate
 
     /**
      * @param string $name
-     * @return void
+     * @return self
      */
     public function activateModifier(string $name): self
     {
@@ -278,7 +275,7 @@ abstract class AbstractCollection implements \IteratorAggregate
 
     /**
      * @param string $name
-     * @return \Src\Collections\AbstractCollection
+     * @return self
      */
     public function deactivateModifier(string $name): self
     {
