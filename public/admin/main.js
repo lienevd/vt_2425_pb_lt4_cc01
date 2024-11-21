@@ -17,7 +17,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(data) {
-                console.log(data);
+                alert('Afbeelding is succesvol geupload');
             },
             error: function(err) {
                 alert(`Error: ${err.responseText}`);
