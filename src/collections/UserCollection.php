@@ -24,7 +24,7 @@ class UserCollection extends AbstractCollection
      * @param array|null $items
      * @return \Src\Collections\UserCollection
      */
-    protected function createInstance(): self
+    protected function getInstance(): self
     {
         return $this;
     }

@@ -4,7 +4,7 @@ namespace Src\Collections;
 
 class Collection extends AbstractCollection
 {
-    protected function createInstance(): self
+    protected function getInstance(): self
     {
         return $this;
     }

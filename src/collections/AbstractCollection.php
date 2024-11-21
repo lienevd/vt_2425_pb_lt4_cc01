@@ -101,9 +101,7 @@ abstract class AbstractCollection implements \IteratorAggregate
     private function validateItem(array $item): void
     {
         foreach ($item as $name => $value) {
-            if (!array_key_exists($name, $this->structure)) {
-                throw new \Exception("Invalid item key: $name");
-            }
+            $this->checkKey($name);
 
             $type = $this->structure[$name]['type'];
             $size = $this->structure[$name]['size'] ?? null;
@@ -160,9 +158,26 @@ abstract class AbstractCollection implements \IteratorAggregate
         $this->structure = $structure;
     }
 
+    private function checkKey(string $key): void
+    {
+        if (!array_key_exists($key, $this->structure)) {
+            throw new \Exception("Invalid item key: $key, not in structure");
+        }
+    }
+
+    private function checkKeys(array $item): void
+    {
+        foreach ($item as $key => $value) {
+            $this->checkKey($key);
+        }
+    }
+
     public function normalize(array $item): array
     {
         $newItem = [];
+
+        $this->checkKeys($item);
+
         foreach ($this->structure as $name => $settings) {
             $itemValue = $item[$name];
             $newItem[$name] = $itemValue;
@@ -180,28 +195,14 @@ abstract class AbstractCollection implements \IteratorAggregate
         $items = [];
 
         foreach ($jumbled as $jumble) {
-            $item = [];
-
-            foreach ($jumble as $name => $value) {
-                if (!array_key_exists($name, $this->structure)) {
-                    throw new \Exception("Invalid item key: $name");
-                }
-
-                foreach ($this->structure as $structureName => $type) {
-                    if ($structureName === $name) {
-                        $item[$structureName] = $value;
-                    }
-                }
-            }
-
-            $items[] = $item;
+            $items[] = $this->normalize($jumble);
         }
 
         $this->items = $items;
         $this->validateItems();
         $this->handleOptions();
 
-        return $this->createInstance();
+        return $this->getInstance();
     }
 
 
@@ -272,7 +273,7 @@ abstract class AbstractCollection implements \IteratorAggregate
     public function activateModifier(string $name): self
     {
         $this->modifiers[$name]['active'] = true;
-        return $this->createInstance();
+        return $this->getInstance();
     }
 
     /**
@@ -283,7 +284,7 @@ abstract class AbstractCollection implements \IteratorAggregate
     {
         $this->modifiers[$name]['active'] = false;
 
-        return $this->createInstance();
+        return $this->getInstance();
     }
 
     /**
@@ -318,5 +319,5 @@ abstract class AbstractCollection implements \IteratorAggregate
      * @param array|null $items
      * @return static
      */
-    abstract protected function createInstance(): self;
+    abstract protected function getInstance(): self;
 }
