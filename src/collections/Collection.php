@@ -34,6 +34,7 @@ class Collection extends AbstractCollection
         $this->setStructure($structure);
 
         $this->items = $jumbled;
+        $this->init();
 
         return $this;
     }
