@@ -13,6 +13,11 @@ abstract class AbstractCollection implements \IteratorAggregate
         protected ?array $items = null,
         protected ?array $options = null
     ) {
+        $this->init();
+    }
+
+    protected function init(): void
+    {
         $this->configure();
         $this->validateItems();
         $this->modify();
@@ -57,7 +62,11 @@ abstract class AbstractCollection implements \IteratorAggregate
             return;
         }
 
-        if (isset($options['single_array']) && $options['single_array']) {
+        if (
+            isset($options['single_array']) &&
+            $options['single_array'] &&
+            $this->items !== null
+        ) {
             if (count($this->items) === 1) {
                 foreach ($this->items as $item) {
                     $this->items = $item;
@@ -195,9 +204,7 @@ abstract class AbstractCollection implements \IteratorAggregate
         }
 
         $this->items = $items;
-        $this->validateItems();
-        $this->handleOptions();
-        $this->modify();
+        $this->init();
 
         return $this->getInstance();
     }
