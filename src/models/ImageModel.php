@@ -23,6 +23,6 @@ class ImageModel extends BaseModel
             ->bindParams([
                 [':category', $category, \PDO::PARAM_STR]
             ])
-            ->fetchAssoc(new ImageCollection());
+            ->fetchAssoc((new ImageCollection())->deactivateModifier('image'));
     }
 }

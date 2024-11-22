@@ -13,9 +13,6 @@ class ImageCollection extends AbstractCollection
             'image' => ['type' => PHPTypes::STR],
             'category' => ['type' => PHPTypes::STR]
         ]);
-        $this->addModifier('image', function (string $image) {
-            return '<img src="data:jpg;base64,' . $image . '" alt="Image">';
-        });
     }
 
     protected function getInstance(): self

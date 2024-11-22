@@ -57,6 +57,18 @@ select {
     aspect-ratio: 1 / 1;
 }
 
+.grid-image {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.grid-image:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
 .grid-button:hover {
     background-color: #0056b3;
 }
