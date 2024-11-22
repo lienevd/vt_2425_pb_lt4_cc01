@@ -25,7 +25,7 @@ $(document).ready(function() {
         gridSize = parseInt(gameLengthSelect.value);
 
         switchScreen(initializationScreen, gameScreen);
-        generateGrid(gridSize);
+        generateGrid(gridSize, selectedCategory);
     });
 
     // Go Back to Start Screen
@@ -45,12 +45,12 @@ $(document).ready(function() {
     }
 
     // Generate Grid
-    function generateGrid(size) {
+    function generateGrid(size, category) {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         gridContainer.innerHTML = ''; // Clear previous grid
 
         $.ajax({
-            url: '/get-images/dieren',
+            url: '/get-images/' + category,
             type: 'GET',
             beforeSend: function() {
                 
