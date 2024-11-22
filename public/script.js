@@ -49,11 +49,13 @@ $(document).ready(function() {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         gridContainer.innerHTML = ''; // Clear previous grid
 
+        // Get request om afbeeldingen op te halen
         $.ajax({
             url: '/get-images/' + category,
             type: 'GET',
             beforeSend: function() {
                 
+                // Laat "Loading images..." zien totdat de afbeeldingen zijn geladen
                 gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
 
             },
@@ -70,6 +72,7 @@ $(document).ready(function() {
                     button.className = 'grid-button';
                     button.textContent = i; // Placeholder for button text
                     
+                    // Zet de afbeelding om naar een <img> element
                     let image = document.createElement('img');
                     image.src = "data:image/jpg;base64," + images[i-1];
                     image.className = 'grid-image';
