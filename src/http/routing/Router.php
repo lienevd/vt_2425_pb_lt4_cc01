@@ -108,20 +108,20 @@ class Router
     {
         $reqUri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
-        foreach (self::$routes as $route) {
-            if ($route->getUri() === $reqUri && $route->getMethod() === $method) {
-                $responseParams = self::resolveUri($route->getUri(), $reqUri);
-                $responseCode = $responseParams['code'];
 
-                if ($responseCode !== ResponseTypeEnum::OK) {
-                    return (new Response($responseCode));
+        foreach (self::$routes as $route) {
+            if ($route->getMethod() === $method) {
+                $responseParams = self::resolveUri($reqUri, $route->getUri());
+                if ($responseParams['code'] !== ResponseTypeEnum::OK) {
+                    continue;
                 }
 
                 $middlewareResponseArray = $route->executeMiddleware();
                 foreach ($middlewareResponseArray as $middlewareResponse) {
-                    if ($middlewareResponse->getResponse() !== ResponseTypeEnum::OK) {
-                        return $middlewareResponse;
+                    if ($middlewareResponse->getResponse() === ResponseTypeEnum::OK) {
+                        continue;
                     }
+                    return $middlewareResponse;
                 }
 
                 $params = $responseParams['params'];
@@ -133,17 +133,17 @@ class Router
 
                 $response = call_user_func_array($callback, $params);
                 if (!$response instanceof Response) {
-                    throw new \Exception('All callback must return a response');
+                    throw new \Exception('All callbacks must return a response');
                 }
 
                 if (!self::checkForParams($route)) {
-                    return (new Response(ResponseTypeEnum::BAD_REQUEST));
+                    return new Response(ResponseTypeEnum::BAD_REQUEST);
                 }
 
                 return $response;
             }
         }
 
-        return (new Response(ResponseTypeEnum::NOT_FOUND));
+        return new Response(ResponseTypeEnum::NOT_FOUND);
     }
 }
