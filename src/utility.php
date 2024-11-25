@@ -20,10 +20,19 @@ function view(string $path, array $params = []): Response
     extract($params);
 
     // View word in de output buffer gezet en daarna toegevoegd aan de response content
-    ob_start();
-    require_once $viewDir;
-    $view = ob_get_clean();
-    ob_end_flush();
 
+    try {
+        // Start output buffering
+        ob_start();
+        require_once $viewDir;
+        $view = ob_get_clean(); // Automatically clears the buffer
+    } catch (Throwable $e) {
+        ob_end_clean(); // Clean buffer on error
+        return new Response(
+            ResponseTypeEnum::BAD_REQUEST,
+            "Error rendering view: {$e->getMessage()}"
+        );
+    }
+    
     return new Response(ResponseTypeEnum::OK, $view);
 }
