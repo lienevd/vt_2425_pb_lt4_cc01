@@ -29,7 +29,7 @@ function view(string $path, array $params = []): Response
     } catch (Throwable $e) {
         ob_end_clean(); // Clean buffer on error
         return new Response(
-            ResponseTypeEnum::INTERNAL_SERVER_ERROR,
+            ResponseTypeEnum::BAD_REQUEST,
             "Error rendering view: {$e->getMessage()}"
         );
     }
