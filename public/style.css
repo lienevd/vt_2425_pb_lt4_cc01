@@ -89,3 +89,18 @@ select {
 .back-button:hover {
     background-color: #E03129;
 }
+
+#hint-container {
+    position: absolute;
+    left: 20px;
+    margin-top: 40px;
+    padding: 10px;
+    border: 5px dotted black;
+    background-color: rgb(238, 238, 238);
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.active-image {
+    outline: #0056b3 solid 5px;
+}

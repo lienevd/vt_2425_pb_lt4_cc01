@@ -36,6 +36,10 @@
     <!-- Game Screen -->
     <div id="game-screen" class="screen">
         <button class="back-button" id="back-to-initialization">↰</button>
+        <div id="hint-container">
+            <label>Hint:</label>
+            <span id="hint">Meow</span>
+        </div>
         <div id="grid-container"></div>
     </div>
 
