@@ -65,8 +65,6 @@ $(document).ready(function() {
                 
                 let images = JSON.parse(data);
 
-                console.log(images);
-
                 for (let i = 1; i <= size * size; i++) {
                     const button = document.createElement('button');
                     button.className = 'grid-button';
@@ -76,6 +74,10 @@ $(document).ready(function() {
                     let image = document.createElement('img');
                     image.src = "data:image/jpg;base64," + images[i-1];
                     image.className = 'grid-image';
+
+                    image.addEventListener('click', () => {
+                        image.classList.toggle('active-image');
+                    });
 
                     gridContainer.appendChild(image);
                 }
