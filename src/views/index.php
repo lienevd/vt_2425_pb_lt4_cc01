@@ -1,11 +1,8 @@
 <?php
 
-require_once 'C:\Users\bramt\Documents\School\vt_2425_pb_lt4_cc01\src\models\HintModel.php';
-
-use src\models\HintModel;
+use Src\Models\HintModel;
 
 $hintModel = new HintModel();
-$hintID = 1;
 // $hint = $hintModel->getHint();
 $hint = $hintModel -> getHint();
 

@@ -2,6 +2,8 @@
 
 namespace Src\Models;
 
+use Src\Collections\Collection;
+
 use Src\Collections\HintCollection;
 
 class HintModel extends BaseModel
@@ -21,7 +23,7 @@ class HintModel extends BaseModel
     //     }
     // }
 
-    public function getHint(int $id = 1): ?string
+    public function getHint(int $id = 2): ?string
     {
         try {
         // Prepare and bind query
@@ -31,12 +33,12 @@ class HintModel extends BaseModel
         ]);
 
         // Fetch single result
-        $result = $this->db->fetchSingle();
+        $result = $this->db->fetchSingle(new collection(options: [
+            "single_array" => true
+        ])) ;
 
-        // Check if result exists
-        if ($result !== null) {
-            return $result['hintText'] ?? null;
-        }
+            return $result->getItems()['hintText'] ?? null;
+        
 
         return null; // No hints found
     } catch (\Exception $e) {
