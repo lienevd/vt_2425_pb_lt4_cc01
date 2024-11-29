@@ -1,3 +1,16 @@
+<?php
+
+require_once 'C:\Users\bramt\Documents\School\vt_2425_pb_lt4_cc01\src\models\HintModel.php';
+
+use src\models\HintModel;
+
+$hintModel = new HintModel();
+$hintID = 1;
+// $hint = $hintModel->getHint();
+$hint = $hintModel -> getHint();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +51,7 @@
         <button class="back-button" id="back-to-initialization">↰</button>
         <div id="hint-container">
             <label>Hint:</label>
-            <span id="hint">Meow</span>
+            <span id="hint"><?php echo htmlspecialchars($hint); ?></span>
         </div>
         <div id="grid-container"></div>
     </div>
