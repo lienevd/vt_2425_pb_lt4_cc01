@@ -11,7 +11,7 @@ $(document).ready(function() {
     const gameLengthSelect = document.getElementById('game-length');
     const gridContainer = document.getElementById('grid-container');
 
-    let selectedCategory = 'dieren';
+    let selectedCategory = '';
     let gridSize = 3;
 
     // Show Initialization Screen
@@ -47,46 +47,81 @@ $(document).ready(function() {
     // Generate Grid
     function generateGrid(size, category) {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        gridContainer.innerHTML = ''; // Clear previous grid
+        gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
 
-        // Get request om afbeeldingen op te halen
-        $.ajax({
-            url: '/get-images/' + category,
-            type: 'GET',
-            beforeSend: function() {
+        $.get('/get-images/' + category, function(data) {
+            gridContainer.innerHTML = ''; // Clear previous grid
                 
-                // Laat "Loading images..." zien totdat de afbeeldingen zijn geladen
-                gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
+            let images = JSON.parse(data);
 
-            },
-            success: function(data) {
-
-                gridContainer.innerHTML = ''; // Clear previous grid
+            for (let i = 1; i <= size * size; i++) {
+                const button = document.createElement('button');
+                button.className = 'grid-button';
+                button.textContent = i; // Placeholder for button text
                 
-                let images = JSON.parse(data);
+                // Zet de afbeelding om naar een <img> element
+                let image = document.createElement('img');
+                image.src = "data:image/jpg;base64," + images[i-1];
+                image.className = 'grid-image';
 
-                for (let i = 1; i <= size * size; i++) {
-                    const button = document.createElement('button');
-                    button.className = 'grid-button';
-                    button.textContent = i; // Placeholder for button text
-                    
-                    // Zet de afbeelding om naar een <img> element
-                    let image = document.createElement('img');
-                    image.src = "data:image/jpg;base64," + images[i-1];
-                    image.className = 'grid-image';
+                image.addEventListener('click', () => {
+                    image.classList.toggle('active-image');
+                });
 
-                    image.addEventListener('click', () => {
-                        image.classList.toggle('active-image');
-                    });
-
-                    gridContainer.appendChild(image);
-                }
-
-            },
-            error: function(error) {
-                console.log(error);
-            },
+                gridContainer.appendChild(image);
+            }
         });
 
+        // Get request om afbeeldingen op te halen
+        // $.ajax({
+        //     url: '/get-images/' + category,
+        //     type: 'GET',
+        //     beforeSend: function() {
+                
+        //         // Laat "Loading images..." zien totdat de afbeeldingen zijn geladen
+        //         gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
+
+        //     },
+        //     success: function(data) {
+
+        //         gridContainer.innerHTML = ''; // Clear previous grid
+                
+        //         let images = JSON.parse(data);
+
+        //         for (let i = 1; i <= size * size; i++) {
+        //             const button = document.createElement('button');
+        //             button.className = 'grid-button';
+        //             button.textContent = i; // Placeholder for button text
+                    
+        //             // Zet de afbeelding om naar een <img> element
+        //             let image = document.createElement('img');
+        //             image.src = "data:image/jpg;base64," + images[i-1];
+        //             image.className = 'grid-image';
+
+        //             image.addEventListener('click', () => {
+        //                 image.classList.toggle('active-image');
+        //             });
+
+        //             gridContainer.appendChild(image);
+        //         }
+
+        //     },
+        //     error: function(error) {
+        //         console.log(error);
+        //     },
+        // });
+
     }
+
+    $("#hint-input-form").on("submit", function(event) {
+        event.preventDefault();
+        let hint = $("#hint-input").val();
+
+        if (hint === "") {
+            alert("Please enter a hint.");
+            return;
+        }
+
+        $.post('/add-hint', { hint: hint, category: selectedCategory }, function(data) {});
+    });
 });
