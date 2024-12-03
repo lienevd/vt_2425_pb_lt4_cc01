@@ -59,7 +59,7 @@ class HintModel extends BaseModel
             return $this->db->execute();
 
         } catch (\Exception $e) {
-        
+            return false;
         }
     }
     
