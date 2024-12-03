@@ -3,7 +3,6 @@
 use Src\Models\HintModel;
 
 $hintModel = new HintModel();
-// $hint = $hintModel->getHint();
 $hint = $hintModel -> getHint();
 
 ?>
@@ -50,6 +49,10 @@ $hint = $hintModel -> getHint();
             <label>Hint:</label>
             <span id="hint"><?php echo htmlspecialchars($hint); ?></span>
         </div>
+        <form id="hint-input-form">
+            <input type="text" id="hint-input" placeholder="Hint invoeren">
+            <button type="submit">Hint toevoegen</button>
+        </form>
         <div id="grid-container"></div>
     </div>
 

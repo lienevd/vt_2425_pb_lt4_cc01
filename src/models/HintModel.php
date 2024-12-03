@@ -26,26 +26,41 @@ class HintModel extends BaseModel
     public function getHint(int $id = 2): ?string
     {
         try {
-        // Prepare and bind query
-        $this->db->query('SELECT hintText FROM hints WHERE id = :id');
-        $this->db->bindParams([
-            [':id', $id, \PDO::PARAM_INT]
-        ]);
+            // Prepare and bind query
+            $this->db->query('SELECT hintText FROM hints WHERE id = :id');
+            $this->db->bindParams([
+                [':id', $id, \PDO::PARAM_INT]
+            ]);
 
-        // Fetch single result
-        $result = $this->db->fetchSingle(new collection(options: [
-            "single_array" => true
-        ])) ;
+            // Fetch single result
+            $result = $this->db->fetchSingle(new collection(options: [
+                "single_array" => true
+            ])) ;
 
             return $result->getItems()['hintText'] ?? null;
         
-
-        return null; // No hints found
-    } catch (\Exception $e) {
-        // Log and handle exceptions gracefully
-        error_log('Error fetching hint: ' . $e->getMessage());
-        return null;
+        } catch (\Exception $e) {
+            // Log and handle exceptions gracefully
+            error_log('Error fetching hint: ' . $e->getMessage());
+            return null;
+        }
     }
+
+    public function addHint(string $hint, string $category): bool
+    {
+        try {
+            
+            $this->db->query('INSERT INTO hints (hintText, category) VALUES (:hint, :category);');
+            $this->db->bindParams([
+                [':hint', $hint, \PDO::PARAM_STR],
+                [':category', $category, \PDO::PARAM_STR]
+            ]);
+
+            return $this->db->execute();
+
+        } catch (\Exception $e) {
+            return false;
+        }
     }
     
 }
