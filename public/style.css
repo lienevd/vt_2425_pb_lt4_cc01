@@ -47,6 +47,30 @@ select {
     height: 90vmin;
 }
 
+/* Schermen groter dan 1200px */
+@media (min-width: 1200px) {
+    #grid-container {
+        width: 80vmin;
+        height: 80vmin;
+    }
+}
+
+/* Schermen tussen 768px en 1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
+    #grid-container {
+        width: 85vmin;
+        height: 85vmin;
+    }
+}
+
+/* Schermen kleiner dan 767px */
+@media (max-width: 767px) {
+    #grid-container {
+        width: 95vmin;
+        height: 95vmin;
+    }
+}
+
 .grid-button {
     background-color: #007BFF;
     color: white;
