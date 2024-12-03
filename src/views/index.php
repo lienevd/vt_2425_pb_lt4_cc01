@@ -1,12 +1,3 @@
-<?php
-
-use Src\Models\HintModel;
-
-$hintModel = new HintModel();
-$hint = $hintModel -> getHint();
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +38,7 @@ $hint = $hintModel -> getHint();
         <button class="back-button" id="back-to-initialization">↰</button>
         <div id="hint-container">
             <label>Hint:</label>
-            <span id="hint"><?php echo htmlspecialchars($hint); ?></span>
+            <span id="hint"></span>
         </div>
         <form id="hint-input-form">
             <input type="text" id="hint-input" placeholder="Hint invoeren">

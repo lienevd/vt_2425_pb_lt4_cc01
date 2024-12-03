@@ -23,13 +23,13 @@ class HintModel extends BaseModel
     //     }
     // }
 
-    public function getHint(int $id = 2): ?string
+    public function getHint(string $category): ?string
     {
         try {
             // Prepare and bind query
-            $this->db->query('SELECT hintText FROM hints WHERE id = :id');
+            $this->db->query('SELECT hintText FROM hints WHERE category = :category ORDER BY RAND() LIMIT 1;');
             $this->db->bindParams([
-                [':id', $id, \PDO::PARAM_INT]
+                [':category', $category, \PDO::PARAM_STR]
             ]);
 
             // Fetch single result

@@ -25,6 +25,7 @@ $(document).ready(function() {
         gridSize = parseInt(gameLengthSelect.value);
 
         switchScreen(initializationScreen, gameScreen);
+        fillHint(selectedCategory);
         generateGrid(gridSize, selectedCategory);
     });
 
@@ -42,6 +43,15 @@ $(document).ready(function() {
     function switchScreen(current, next) {
         current.classList.remove('active');
         next.classList.add('active');
+    }
+
+    function fillHint(category) {
+
+        $.get('/get-hint/' + category, function(data) {
+            console.log(data);
+            $("#hint").text(data);
+        });
+
     }
 
     // Generate Grid
