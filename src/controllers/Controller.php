@@ -26,6 +26,14 @@ final class Controller
         return new Response(ResponseTypeEnum::OK, json_encode($images));
     }
 
+    public function getHint(string $category): Response
+    {
+        $hintModel = new HintModel();
+        $hint = ucfirst($hintModel->getHint($category));
+
+        return new Response(ResponseTypeEnum::OK, $hint);
+    }
+
     public function addHint(): Response
     {
 
