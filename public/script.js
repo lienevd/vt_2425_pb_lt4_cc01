@@ -145,5 +145,9 @@ $(document).ready(function() {
         }
 
         $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function() {});
+
+        $("#hint-input").val('');
+        $(".grid-image").removeClass('active-image');
+
     });
 });
