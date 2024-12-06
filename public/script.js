@@ -132,6 +132,18 @@ $(document).ready(function() {
             return;
         }
 
-        $.post('/add-hint', { hint: hint, category: selectedCategory }, function(data) {});
+        let imageIds = [];
+        $(".grid-image").each(function() {
+            if ($(this).hasClass("active-image")) {
+                imageIds.push($(this).data('id'));
+            }
+        });
+
+        if (imageIds.length < 2) {
+            alert("Selecteer minimaal 2 afbeeldingen.");
+            return;
+        }
+
+        $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function() {});
     });
 });
