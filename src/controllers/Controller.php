@@ -20,7 +20,7 @@ final class Controller
         $imageModel = new ImageModel;
         $images = [];
         foreach ($imageModel->getImages($category) as $image) {
-            $images[] = $image['image'];
+            array_push($images, ['image' => $image['image'], 'id' => $image['id']]);
         }
 
         return new Response(ResponseTypeEnum::OK, json_encode($images));

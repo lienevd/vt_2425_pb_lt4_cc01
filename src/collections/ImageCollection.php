@@ -11,7 +11,8 @@ class ImageCollection extends AbstractCollection
         $this->setStructure([
             'id' => ['type' => PHPTypes::INT],
             'image' => ['type' => PHPTypes::STR],
-            'category' => ['type' => PHPTypes::STR]
+            'category' => ['type' => PHPTypes::STR],
+            'category_id' => ['type' => PHPTypes::INT]
         ]);
     }
 
