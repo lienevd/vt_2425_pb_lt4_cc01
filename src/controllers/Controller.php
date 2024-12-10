@@ -14,15 +14,11 @@ final class Controller
         return view('index');
     }
 
-    public function getImages(string $category): Response
+    public function getImages(int $hint_id, string $category, int $amount): Response
     {
         $imageModel = new ImageModel;
-        $images = [];
-        foreach ($imageModel->getImages($category) as $image) {
-            array_push($images, ['image' => $image['image'], 'id' => $image['id']]);
-        }
 
-        return new Response(ResponseTypeEnum::OK, json_encode($images));
+        return new Response(ResponseTypeEnum::OK, $imageModel->getImages($hint_id, $category, $amount));
     }
 
     public function getHint(string $category): Response

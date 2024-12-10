@@ -27,7 +27,7 @@ class HintModel extends BaseModel
     {
         try {
             // Prepare and bind query
-            $this->db->query('SELECT hintText FROM hints WHERE category = :category ORDER BY RAND() LIMIT 1;');
+            $this->db->query('SELECT id, hintText FROM hints WHERE category = :category ORDER BY RAND() LIMIT 1;');
             $this->db->bindParams([
                 [':category', $category, \PDO::PARAM_STR]
             ]);
@@ -37,7 +37,7 @@ class HintModel extends BaseModel
                 "single_array" => true
             ])) ;
 
-            return $result->getItems()['hintText'] ?? null;
+            return json_encode($result->getItems()) ?? null;
         
         } catch (\Exception $e) {
             // Log and handle exceptions gracefully
