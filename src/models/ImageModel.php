@@ -31,9 +31,11 @@ class ImageModel extends BaseModel
         $results = [];
         $image_ids = [];
 
-        foreach ($this->db->fetchAssoc()->getItems() as $image) {
-            array_push($results, ['image' => $image['image'], 'id' => $image['id']]);
-            array_push($image_ids, $image['id']);
+        if ($this->db->rowCount() > 0) {
+            foreach ($this->db->fetchAssoc()->getItems() as $image) {
+                array_push($results, ['image' => $image['image'], 'id' => $image['id']]);
+                array_push($image_ids, $image['id']);
+            }
         }
 
         $amountLeft = $amount - $this->db->rowCount();

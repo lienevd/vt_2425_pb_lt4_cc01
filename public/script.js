@@ -36,6 +36,8 @@ $(document).ready(function() {
     // Go Back to Initialization Screen
     backToInitializationButton.addEventListener('click', () => {
         switchScreen(gameScreen, initializationScreen);
+        gridContainer.innerHTML = ''; // Clear grid
+        $("#hint").text(''); // Clear hint
     });
 
     // Switch between screens
