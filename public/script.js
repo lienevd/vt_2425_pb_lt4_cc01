@@ -25,8 +25,7 @@ $(document).ready(function() {
         gridSize = parseInt(gameLengthSelect.value);
 
         switchScreen(initializationScreen, gameScreen);
-        fillHint(selectedCategory);
-        generateGrid(gridSize, selectedCategory);
+        fillHint(selectedCategory, gridSize);
     });
 
     // Go Back to Start Screen
@@ -45,25 +44,30 @@ $(document).ready(function() {
         next.classList.add('active');
     }
 
-    function fillHint(category) {
+    function fillHint(category, gridSize) {
 
         $.get('/get-hint/' + category, function(data) {
-            $("#hint").text(data);
+            let hint = JSON.parse(data);
+            $("#hint").text(hint['hintText']);
+            generateGrid(gridSize, hint['id'], category);
         });
 
     }
 
     // Generate Grid
-    function generateGrid(size, category) {
+    function generateGrid(size, hint_id, category) {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
 
-        $.get('/get-images/' + category, function(data) {
+        $.get('/get-images/' + hint_id + "/" + category + '/' + (size * size), function(data) {
             gridContainer.innerHTML = ''; // Clear previous grid
-                
+
             let images = JSON.parse(data);
 
+            console.log(images);
+
             for (let i = 1; i <= size * size; i++) {
+
                 const button = document.createElement('button');
                 button.className = 'grid-button';
                 button.textContent = i; // Placeholder for button text
