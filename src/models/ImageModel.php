@@ -20,7 +20,7 @@ class ImageModel extends BaseModel
 
     public function getImages(int $hint_id, string $category, int $amount): ?string
     {
-        $this->db->query('SELECT * FROM hint_image AS hi JOIN images AS i ON hi.image_id = i.id WHERE hint_id = :hint_id AND i.category = :category;');
+        $this->db->query('SELECT * FROM hint_image AS hi JOIN images AS i ON hi.image_id = i.id WHERE hint_id = :hint_id AND i.category = :category LIMIT 4;');
         $this->db->bindParams([
             [':hint_id', $hint_id, \PDO::PARAM_INT],
             [':category', $category, \PDO::PARAM_STR]
