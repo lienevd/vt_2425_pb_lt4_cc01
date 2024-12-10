@@ -20,7 +20,7 @@ final class Controller
         $imageModel = new ImageModel;
         $images = [];
         foreach ($imageModel->getImages($category) as $image) {
-            $images[] = $image['image'];
+            array_push($images, ['image' => $image['image'], 'id' => $image['id']]);
         }
 
         return new Response(ResponseTypeEnum::OK, json_encode($images));
@@ -39,6 +39,11 @@ final class Controller
 
         $hint = $_POST['hint'];
         $category = $_POST['category'];
+        $images = $_POST['imageIds'];
+
+        if (count($images) < 2) {
+            return new Response(ResponseTypeEnum::BAD_REQUEST, 'Voeg minstens één afbeelding toe.');
+        }
 
         if (!isset($hint) || !isset($category)) {
             return new Response(ResponseTypeEnum::BAD_REQUEST, 'Vul alle velden in.');
@@ -46,8 +51,14 @@ final class Controller
 
         $hintModel = new HintModel();
 
-        $response = $hintModel->addHint($hint, $category) ? ResponseTypeEnum::OK : ResponseTypeEnum::BAD_REQUEST;
+        $response = $hintModel->addHint($hint, $category, $images) ? ResponseTypeEnum::OK : ResponseTypeEnum::BAD_REQUEST;
 
-        return new Response($response);
+        $content = '';
+
+        if ($response === ResponseTypeEnum::BAD_REQUEST) {
+            $content = 'Er is iets misgegaan bij het toevoegen van de hint.';
+        }
+
+        return new Response($response, $content);
     }
 }

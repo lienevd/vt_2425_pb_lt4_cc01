@@ -136,4 +136,9 @@ class DB
     {
         return $this->statement->rowCount();
     }
+
+    public function getLastInsertId(): int
+    {
+        return $this->connection->lastInsertId();
+    }
 }

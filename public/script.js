@@ -48,7 +48,6 @@ $(document).ready(function() {
     function fillHint(category) {
 
         $.get('/get-hint/' + category, function(data) {
-            console.log(data);
             $("#hint").text(data);
         });
 
@@ -71,7 +70,8 @@ $(document).ready(function() {
                 
                 // Zet de afbeelding om naar een <img> element
                 let image = document.createElement('img');
-                image.src = "data:image/jpg;base64," + images[i-1];
+                image.src = "data:image/jpg;base64," + images[i-1]['image'];
+                image.setAttribute('data-id', images[i-1]['id']);
                 image.className = 'grid-image';
 
                 image.addEventListener('click', () => {
@@ -132,6 +132,22 @@ $(document).ready(function() {
             return;
         }
 
-        $.post('/add-hint', { hint: hint, category: selectedCategory }, function(data) {});
+        let imageIds = [];
+        $(".grid-image").each(function() {
+            if ($(this).hasClass("active-image")) {
+                imageIds.push($(this).data('id'));
+            }
+        });
+
+        if (imageIds.length < 2) {
+            alert("Selecteer minimaal 2 afbeeldingen.");
+            return;
+        }
+
+        $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function() {});
+
+        $("#hint-input").val('');
+        $(".grid-image").removeClass('active-image');
+
     });
 });

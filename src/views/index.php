@@ -41,6 +41,7 @@
             <span id="hint"></span>
         </div>
         <form id="hint-input-form">
+            <label>Selecteer alle afbeeldingen en bedenk hier een hint voor.</label>
             <input type="text" id="hint-input" placeholder="Hint invoeren">
             <button type="submit">Hint toevoegen</button>
         </form>
