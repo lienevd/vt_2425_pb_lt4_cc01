@@ -29,6 +29,8 @@ class ImageModel extends BaseModel
         $results = [];
         $image_ids = [];
 
+        $this->db->execute();
+
         if ($this->db->rowCount() > 0) {
             foreach ($this->db->fetchAssoc()->getItems() as $image) {
                 array_push($results, ['image' => $image['image'], 'id' => $image['id']]);
