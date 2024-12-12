@@ -12,6 +12,7 @@
     <div id="start-screen" class="screen active">
         <h1>Clue Capture</h1>
         <button id="start-game-button">Start spel</button>
+        <button id="add-hint-button">Hints toevoegen</button>
     </div>
 
     <!-- Initialization Screen -->
@@ -40,12 +41,24 @@
             <label>Hint:</label>
             <span id="hint"></span>
         </div>
+        <div id="grid-container"></div>
+    </div>
+
+    <!-- Hint Screen -->
+    <div id="hint-screen" class="screen">
+        <button class="back-button" id="back-to-start-from-hint">↰</button>
+        <h2>Voeg een hint toe</h2>
+        <label for="hint-category-select">Categorie:</label>
+        <select id="hint-category-select">
+            <option value="dieren">Dieren</option>
+            <option value="kunst">Kunst</option>
+            <option value="technologie">Technologie</option>
+        </select>
         <form id="hint-input-form">
-            <label>Selecteer alle afbeeldingen en bedenk hier een hint voor.</label>
-            <input type="text" id="hint-input" placeholder="Hint invoeren">
+            <input type="text" id="hint-input" placeholder="Voer een hint in">
             <button type="submit">Hint toevoegen</button>
         </form>
-        <div id="grid-container"></div>
+        <div id="hint-grid-container" class="horizontal-scroll"></div>
     </div>
 
     <script src="/public/script.js"></script>
