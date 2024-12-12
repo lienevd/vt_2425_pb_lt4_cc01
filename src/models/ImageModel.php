@@ -6,15 +6,17 @@ use Src\Collections\ImageCollection;
 
 class ImageModel extends BaseModel
 {
-    public function AddImage(string $image, string $category): bool
+    public static function AddImage(string $image, string $category): void
     {
-        $this->db->query('INSERT INTO images (image, category) VALUES (:image, :category);');
+        $categoryName = CategoryModel::getCategoryById($category)->getItems()[0]['name'];
 
-        $this->db->bindParams([
-            ['image', $image, \PDO::PARAM_LOB],
-            ['category', $category, \PDO::PARAM_STR]
-        ]);
-        return $this->db->execute();
+        self::db()->query('INSERT INTO images (image, category, category_id) VALUES (:image, :category, :category_id);')
+            ->bindParams([
+                [':image', base64_encode($image), \PDO::PARAM_LOB],
+                [':category', $categoryName, \PDO::PARAM_LOB],
+                [':category_id', $category, \PDO::PARAM_INT]
+            ])
+            ->execute();
     }
 
     public function getImages(string $category): ?ImageCollection

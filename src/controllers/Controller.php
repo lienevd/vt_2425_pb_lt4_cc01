@@ -6,7 +6,6 @@ use Src\Enums\ResponseTypeEnum;
 use Src\Http\Response;
 use Src\Models\HintModel;
 use Src\Models\ImageModel;
-use Tests\Http\ResponseTests;
 
 final class Controller
 {
