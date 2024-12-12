@@ -13,6 +13,7 @@ class Kernel
     public function run(): void
     {
         Router::get('/', [Controller::class, 'index']);
+        Router::post('/game/restartHint', [Controller::class, 'restartHint']);
 
         Router::get('/admin', [AdminController::class, 'index']);
         Router::post('/admin', [AdminController::class, 'index']);

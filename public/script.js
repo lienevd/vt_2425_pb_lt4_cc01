@@ -52,6 +52,18 @@ $(document).ready(function() {
         });
 
     }
+     // Functie om een nieuwe hint op te halen
+     $("#restart-form").on("submit", function (event) {
+        event.preventDefault(); // Voorkom pagina-herlaad
+        let category = $("#category-select").val();
+        $.post("/game/restartHint", { category: category }, function (data) {
+            let response = JSON.parse(data);
+            console.log("Ontvangen hint:", response.hint);
+            $("#hint").text(response.hint);
+        }).fail(function () {
+            console.error("Er ging iets mis bij het ophalen van de hint.");
+        });
+    });
 
     // Generate Grid
     function generateGrid(size, category) {
