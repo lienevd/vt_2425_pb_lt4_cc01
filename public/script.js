@@ -10,9 +10,11 @@ $(document).ready(function() {
     const categorySelect = document.getElementById('category-select');
     const gameLengthSelect = document.getElementById('game-length');
     const gridContainer = document.getElementById('grid-container');
+    const checkSelectionButton = document.getElementById('check-selection');
 
     let selectedCategory = '';
     let gridSize = 3;
+    let hint;
 
     // Show Initialization Screen
     startGameButton.addEventListener('click', () => {
@@ -40,6 +42,11 @@ $(document).ready(function() {
         $("#hint").text(''); // Clear hint
     });
 
+    checkSelectionButton.addEventListener('click', () => {
+        console.log('Hint ID:', hint['id']);
+        checkSelection(hint['id']);
+    });
+
     // Switch between screens
     function switchScreen(current, next) {
         current.classList.remove('active');
@@ -49,7 +56,7 @@ $(document).ready(function() {
     function fillHint(category, gridSize) {
 
         $.get('/get-hint/' + category, function(data) {
-            let hint = JSON.parse(data);
+            hint = JSON.parse(data);
             $("#hint").text(hint['hintText']);
             generateGrid(gridSize, hint['id'], category);
         });
@@ -67,6 +74,7 @@ $(document).ready(function() {
             let images = JSON.parse(data);
 
             console.log(images);
+    
 
             for (let i = 1; i <= size * size; i++) {
 
@@ -128,6 +136,42 @@ $(document).ready(function() {
         // });
 
     }
+
+    function checkSelection(hint_id) {
+        const selectedImageIds = Array.from(document.querySelectorAll('.grid-image.active-image'))
+            .map(img => parseInt(img.getAttribute('data-id')));
+    
+        if (selectedImageIds.length === 0) {
+            alert('No images selected!');
+            return;
+        }
+
+        
+        $.ajax({
+            url: '/validate-selection',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                hint_id: hint_id,
+                selected_image_ids: selectedImageIds
+            }),
+            success: function (response) {
+                console.log('Raw response:', response);
+                var json = JSON.parse(response);
+                if (json.isCorrect) {
+                    alert('Correct selection!');
+                } else {
+                    alert('Incorrect selection. Try again!');
+                }
+            },
+            error: function (error) {
+                console.error('Error validating selection:', error);
+                console.log(error.responseText);
+                alert('lukt niet');
+            }
+        });
+    }
+    
 
     $("#hint-input-form").on("submit", function(event) {
         event.preventDefault();

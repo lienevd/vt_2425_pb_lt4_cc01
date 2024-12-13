@@ -20,6 +20,7 @@ class Kernel
         Router::get('/get-images/{hint_id}/{category}/{amount}', [Controller::class, 'getImages']);
         Router::get('/get-hint/{category}', [Controller::class, 'getHint']);
         Router::post('/add-hint', [Controller::class, 'addhint']);
+        Router::post('/validate-selection', [Controller::class, 'validateSelection']);
 
         $response = Router::run();
 

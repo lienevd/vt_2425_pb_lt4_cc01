@@ -39,7 +39,9 @@
         <div id="hint-container">
             <label>Hint:</label>
             <span id="hint"></span>
+            <button class="check-selection-button" id="check-selection">Check selectie</button>
         </div>
+       
         <form id="hint-input-form">
             <label>Selecteer alle afbeeldingen en bedenk hier een hint voor.</label>
             <input type="text" id="hint-input" placeholder="Hint invoeren">
