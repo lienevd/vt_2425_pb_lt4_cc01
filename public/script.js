@@ -232,11 +232,41 @@ $(document).ready(function() {
             return;
         }
 
-        $.post('/add-hint', { hint: hint, category: hintCategorySelect.value, imageIds: imageIds }, function() {
-            $("#hint-input").val('');
-            $(".grid-image").removeClass('active-image');
-        }).fail(function() {
-            alert("Failed to add hint.");
-        });
+        $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function() {});
+
+        $("#hint-input").val('');
+        $(".grid-image").removeClass('active-image');
+
     });
 });
+
+function checkForState(name) {
+    return $.get(`/check-state/${name}`).then((response) => {
+        const parsedResponse = JSON.parse(response);
+        return parsedResponse.exists;
+    });
+}
+
+function getFromState(name) {
+    $.get(`/get-state/${name}`)
+        .done((response) => {
+            return response;
+        })
+        .fail(() => {
+            return false;
+        });
+}
+
+function saveToState(name, html) {
+    $.post('/save-state', { name: name, html: html })
+        .done((response) => {
+            console.log('Success:', response);
+        })
+        .fail((jqXHR, textStatus, errorThrown) => {
+            console.error('Error:', jqXHR.responseText || errorThrown);
+        });
+}
+
+function deleteState(name) {
+
+}
