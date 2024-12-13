@@ -77,6 +77,39 @@ class HintModel extends BaseModel
             return false;
         }
     }
-    
+
+    public function getCorrectImageIds(int $hint_id): ?array
+    {
+        try {
+            $this->db->query('SELECT image_id FROM hint_image WHERE hint_id = :hint_id;');
+            $this->db->bindParams([[':hint_id', $hint_id, \PDO::PARAM_INT]]);
+            $correct_image_ids = $this->db->fetchAssoc();
+
+            return array_column($correct_image_ids->getItems(), 'image_id');
+        } catch (\Exception $e) {
+            error_log('Error fetching correct image IDs: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function validateSelection(int $hint_id, array $selected_image_ids): bool {
+    try {
+        // Fetch correct image IDs for the hint
+        $this->db->query('SELECT image_id FROM hint_image WHERE hint_id = :hint_id;');
+            $this->db->bindParams([[':hint_id', $hint_id, \PDO::PARAM_INT]]);
+        $correct_image_ids = $this->db->fetchAssoc();
+        $correct_image_ids = array_column($correct_image_ids->getItems(), 'image_id');
+        
+
+        // Compare sorted arrays
+        sort($correct_image_ids);
+        sort($selected_image_ids);
+
+        return $correct_image_ids === $selected_image_ids;
+    } catch (\Exception $e) {
+        error_log('Error validating selection: ' . $e->getMessage());
+        return false;
+    }
+    }
 }
     

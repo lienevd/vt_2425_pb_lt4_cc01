@@ -41,6 +41,7 @@
         <div id="hint-container">
             <label>Hint:</label>
             <span id="hint"></span>
+            <button class="check-selection-button" id="check-selection">Check selectie</button>
         </div>
         <!-- restart game button-->
         <form id="restart-form" action="/game/restartHint" method="post">

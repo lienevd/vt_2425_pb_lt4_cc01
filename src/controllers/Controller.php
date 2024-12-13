@@ -57,6 +57,42 @@ final class Controller
         return new Response($response, $content);
     }
 
+    public function validateSelection(): Response
+    {
+    $hintModel = new HintModel();
+
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $hint_id = isset($data['hint_id']) ? (int) $data['hint_id'] : null;
+        $selected_image_ids = isset($data['selected_image_ids']) ? (array) $data['selected_image_ids'] : [];
+
+        if (!isset($_POST)) {
+            return new Response(ResponseTypeEnum::BAD_REQUEST, 'Invalid or missing input.');
+        }
+
+        $correct_image_ids = $hintModel->getCorrectImageIds($hint_id);
+
+        sort($correct_image_ids);
+        sort($selected_image_ids);
+
+        // error_log('Correct IDs: ' . print_r($correct_image_ids, true));
+        // error_log('Selected IDs: ' . print_r($selected_image_ids, true));
+
+        $isCorrect = $correct_image_ids == $selected_image_ids;
+
+        error_log($isCorrect ? 'Arrays match!' : 'Arrays do not match.');
+        // error_log($isCorrect);
+        // error_log(json_encode(['isCorrect' => $isCorrect]));
+
+        ob_clean(); 
+        return new Response(ResponseTypeEnum::OK, json_encode(['isCorrect' => $isCorrect]));
+    } catch (\Exception $e) {
+        error_log('Error validating selection: ' . $e->getMessage());
+        return new Response(ResponseTypeEnum:: BAD_REQUEST, 'An error occurred while validating the selection.');
+    }
+}
+
     public function restartHint(): Response
     {
         $hintModel = new HintModel();

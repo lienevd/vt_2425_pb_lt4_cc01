@@ -20,6 +20,8 @@ class ImageModel extends BaseModel
             ->execute();
     }
 
+    
+
     public function getImages(int $hint_id, string $category, int $amount): ?string
     {
         $this->db->query('SELECT * FROM hint_image AS hi JOIN images AS i ON hi.image_id = i.id WHERE hint_id = :hint_id AND i.category = :category ORDER BY RAND() LIMIT 4;');
@@ -74,6 +76,8 @@ class ImageModel extends BaseModel
             
             array_push($results, ['image' => $image['image'], 'id' => $image['id']]);
         }
+        
+       
 
         shuffle($results);
 
