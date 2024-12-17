@@ -31,6 +31,18 @@ body {
     display: flex;
 }
 
+.check-selection-button {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    font-size: 24px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 button {
     padding: 10px 20px;
     font-size: 18px;
@@ -114,7 +126,7 @@ select {
 #hint-container {
     position: absolute;
     left: 20px;
-    margin-top: 40px;
+    margin-top: 150px;
     padding: 10px;
     border: 5px dotted var(--hint-border-color);
     background-color: var(--hint-background-color);

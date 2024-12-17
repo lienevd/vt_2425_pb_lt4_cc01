@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="/public/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <!-- Start Screen -->
     <div id="start-screen" class="screen active">
@@ -40,10 +42,14 @@
         <div id="hint-container">
             <label>Hint:</label>
             <span id="hint"></span>
+            <button class="check-selection-button" id="check-selection">Check selectie</button>
         </div>
         <div id="grid-container"></div>
-    </div>
-
+        <!-- restart game button-->
+        <form id="restart-form" action="/game/restartHint" method="post">
+            <button type="submit">Opnieuw</button>
+        </form>
+        
     <!-- Hint Screen -->
     <div id="hint-screen" class="screen">
         <button class="back-button" id="back-to-start-from-hint">↰</button>
@@ -63,4 +69,5 @@
 
     <script src="/public/script.js"></script>
 </body>
+
 </html>
