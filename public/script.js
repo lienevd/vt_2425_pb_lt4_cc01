@@ -268,5 +268,20 @@ function saveToState(name, html) {
 }
 
 function deleteState(name) {
+    $.ajax({
+        url: '/delete-state' + encodeURIComponent(name),
+        type: 'DELETE',
+        succes: function (name) {
+            log('state deletion', 'Deleted state: ' + name);
+        },
+        error: function(error) {
+            console.error('Error deleting state:', error);
+        }
+    })
+}
 
+function log(name, description) {
+    // hier gaan we loggen naar de db of iets dergelijks
+
+    console.log(`${name} ${description}`);
 }
