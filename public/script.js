@@ -62,18 +62,6 @@ $(document).ready(function() {
         });
 
     }
-     // Functie om een nieuwe hint op te halen
-     $("#restart-form").on("submit", function (event) {
-        event.preventDefault(); // Voorkom pagina-herlaad
-        let category = $("#category-select").val();
-        $.post("/game/restartHint", { category: category }, function (data) {
-            let response = JSON.parse(data);
-            console.log("Ontvangen hint:", response.hint);
-            $("#hint").text(response.hint);
-        }).fail(function () {
-            console.error("Er ging iets mis bij het ophalen van de hint.");
-        });
-    });
 
     // Generate Grid
     function generateGrid(size, hint_id, category) {
@@ -178,11 +166,22 @@ $(document).ready(function() {
             },
             error: function (error) {
                 console.error('Error validating selection:', error);
-                console.log(error.responseText);
                 alert('lukt niet');
             }
         });
     }
+
+    $("#restart-form").on("submit", function (event) {
+        event.preventDefault(); // Voorkom pagina-herlaad
+        let category = $("#category-select").val();
+        $.post("/game/restartHint", { category: category }, function (data) {
+            let response = JSON.parse(data);
+            let hintObject = JSON.parse(response.hint);
+            $("#hint").text(hintObject.hintText);
+        }).fail(function () {
+            console.error("Er ging iets mis bij het ophalen van de hint.");
+        });
+    });
     
 
     $("#hint-input-form").on("submit", function(event) {

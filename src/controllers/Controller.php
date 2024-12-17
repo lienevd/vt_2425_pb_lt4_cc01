@@ -85,7 +85,7 @@ final class Controller
         // error_log($isCorrect);
         // error_log(json_encode(['isCorrect' => $isCorrect]));
 
-        ob_clean(); 
+        // ob_clean(); 
         return new Response(ResponseTypeEnum::OK, json_encode(['isCorrect' => $isCorrect]));
     } catch (\Exception $e) {
         error_log('Error validating selection: ' . $e->getMessage());
