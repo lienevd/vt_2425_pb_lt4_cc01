@@ -75,28 +75,17 @@ final class Controller
 
         sort($correct_image_ids);
         sort($selected_image_ids);
-
-        // error_log('Correct IDs: ' . print_r($correct_image_ids, true));
-        // error_log('Selected IDs: ' . print_r($selected_image_ids, true));
-
+        
         $isCorrect = $correct_image_ids == $selected_image_ids;
 
         error_log($isCorrect ? 'Arrays match!' : 'Arrays do not match.');
-        // error_log($isCorrect);
-        // error_log(json_encode(['isCorrect' => $isCorrect]));
 
-<<<<<<< HEAD
-        // ob_clean(); 
-=======
-        ob_clean(); 
->>>>>>> 75a3df86724beeba301183af4336e2ca0390917d
         return new Response(ResponseTypeEnum::OK, json_encode(['isCorrect' => $isCorrect]));
     } catch (\Exception $e) {
         error_log('Error validating selection: ' . $e->getMessage());
         return new Response(ResponseTypeEnum:: BAD_REQUEST, 'An error occurred while validating the selection.');
     }
-}
-<<<<<<< HEAD
+    }
 
     public function restartHint(): Response
     {
@@ -105,6 +94,4 @@ final class Controller
         $_SESSION['game_data']['current_hint'] = $newHint;
         return new Response(ResponseTypeEnum::OK, json_encode(['hint' => $newHint]));
     }
-=======
->>>>>>> 75a3df86724beeba301183af4336e2ca0390917d
 }

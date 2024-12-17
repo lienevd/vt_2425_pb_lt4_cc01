@@ -11,11 +11,9 @@ $(document).ready(function() {
     const gameLengthSelect = document.getElementById('game-length');
     const gridContainer = document.getElementById('grid-container');
     const checkSelectionButton = document.getElementById('check-selection');
-    const checkSelectionButton = document.getElementById('check-selection');
 
     let selectedCategory = '';
     let gridSize = 3;
-    let hint;
     let hint;
 
     // Show Initialization Screen
@@ -29,7 +27,6 @@ $(document).ready(function() {
         gridSize = parseInt(gameLengthSelect.value);
 
         switchScreen(initializationScreen, gameScreen);
-        fillHint(selectedCategory, gridSize);
         fillHint(selectedCategory, gridSize);
     });
 
@@ -66,9 +63,6 @@ $(document).ready(function() {
     function fillHint(category, gridSize) {
 
         $.get('/get-hint/' + category, function(data) {
-            hint = JSON.parse(data);
-            $("#hint").text(hint['hintText']);
-            generateGrid(gridSize, hint['id'], category);
             hint = JSON.parse(data);
             $("#hint").text(hint['hintText']);
             generateGrid(gridSize, hint['id'], category);

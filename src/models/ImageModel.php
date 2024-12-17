@@ -4,6 +4,7 @@ namespace Src\Models;
 
 use Src\Collections\Collection;
 use Src\Collections\ImageCollection;
+use Src\Database\DB;
 
 class ImageModel extends BaseModel
 {
@@ -11,7 +12,7 @@ class ImageModel extends BaseModel
     {
         $categoryName = CategoryModel::getCategoryById($category)->getItems()[0]['name'];
 
-        self::db()->query('INSERT INTO images (image, category, category_id) VALUES (:image, :category, :category_id);')
+        DB::connect()->query('INSERT INTO images (image, category, category_id) VALUES (:image, :category, :category_id);')
             ->bindParams([
                 [':image', base64_encode($image), \PDO::PARAM_LOB],
                 [':category', $categoryName, \PDO::PARAM_LOB],
@@ -20,7 +21,6 @@ class ImageModel extends BaseModel
             ->execute();
     }
 
-    
 
     public function getImages(int $hint_id, string $category, int $amount): ?string
     {

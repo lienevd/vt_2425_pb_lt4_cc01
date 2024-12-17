@@ -11,8 +11,7 @@ class HintCollection extends AbstractCollection
         $this->setStructure([
             'id' => ['type' => PHPTypes::INT],
             'hintText' => ['type' => PHPTypes::STR],
-            'category' => ['type' => PHPTypes::STR],
-            'category_id' => ['type' => PHPTypes::INT]
+            'category' => ['type' => PHPTypes::STR]
         ]);
     }
 
