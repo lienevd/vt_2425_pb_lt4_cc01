@@ -43,10 +43,14 @@
             <span id="hint"></span>
             <button class="check-selection-button" id="check-selection">Check selectie</button>
         </div>
+<<<<<<< HEAD
         <!-- restart game button-->
         <form id="restart-form" action="/game/restartHint" method="post">
             <button type="submit">Opnieuw</button>
         </form>
+=======
+       
+>>>>>>> 75a3df86724beeba301183af4336e2ca0390917d
         <form id="hint-input-form">
             <label>Selecteer alle afbeeldingen en bedenk hier een hint voor.</label>
             <input type="text" id="hint-input" placeholder="Hint invoeren">
