@@ -14,15 +14,11 @@ final class Controller
         return view('index');
     }
 
-    public function getImages(string $category): Response
+    public function getImages(int $hint_id, string $category, int $amount): Response
     {
         $imageModel = new ImageModel;
-        $images = [];
-        foreach ($imageModel->getImages($category) as $image) {
-            array_push($images, ['image' => $image['image'], 'id' => $image['id']]);
-        }
 
-        return new Response(ResponseTypeEnum::OK, json_encode($images));
+        return new Response(ResponseTypeEnum::OK, $imageModel->getImages($hint_id, $category, $amount));
     }
 
     public function getHint(string $category): Response
@@ -61,6 +57,47 @@ final class Controller
         return new Response($response, $content);
     }
 
+    public function validateSelection(): Response
+    {
+    $hintModel = new HintModel();
+
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $hint_id = isset($data['hint_id']) ? (int) $data['hint_id'] : null;
+        $selected_image_ids = isset($data['selected_image_ids']) ? (array) $data['selected_image_ids'] : [];
+
+        if (!isset($_POST)) {
+            return new Response(ResponseTypeEnum::BAD_REQUEST, 'Invalid or missing input.');
+        }
+
+        $correct_image_ids = $hintModel->getCorrectImageIds($hint_id);
+
+        sort($correct_image_ids);
+        sort($selected_image_ids);
+
+        // error_log('Correct IDs: ' . print_r($correct_image_ids, true));
+        // error_log('Selected IDs: ' . print_r($selected_image_ids, true));
+
+        $isCorrect = $correct_image_ids == $selected_image_ids;
+
+        error_log($isCorrect ? 'Arrays match!' : 'Arrays do not match.');
+        // error_log($isCorrect);
+        // error_log(json_encode(['isCorrect' => $isCorrect]));
+
+<<<<<<< HEAD
+        // ob_clean(); 
+=======
+        ob_clean(); 
+>>>>>>> 75a3df86724beeba301183af4336e2ca0390917d
+        return new Response(ResponseTypeEnum::OK, json_encode(['isCorrect' => $isCorrect]));
+    } catch (\Exception $e) {
+        error_log('Error validating selection: ' . $e->getMessage());
+        return new Response(ResponseTypeEnum:: BAD_REQUEST, 'An error occurred while validating the selection.');
+    }
+}
+<<<<<<< HEAD
+
     public function restartHint(): Response
     {
         $hintModel = new HintModel();
@@ -68,4 +105,6 @@ final class Controller
         $_SESSION['game_data']['current_hint'] = $newHint;
         return new Response(ResponseTypeEnum::OK, json_encode(['hint' => $newHint]));
     }
+=======
+>>>>>>> 75a3df86724beeba301183af4336e2ca0390917d
 }
