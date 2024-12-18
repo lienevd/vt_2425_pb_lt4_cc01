@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // DOM Elements
     const startScreen = document.getElementById('start-screen');
     const initializationScreen = document.getElementById('initialization-screen');
@@ -11,10 +11,17 @@ $(document).ready(function() {
     const gameLengthSelect = document.getElementById('game-length');
     const gridContainer = document.getElementById('grid-container');
     const checkSelectionButton = document.getElementById('check-selection');
+    const restartGameButton = document.getElementById('restart-game-button');
+
 
     let selectedCategory = '';
     let gridSize = 3;
     let hint;
+
+    // Event listener voor de restart game button
+    restartGameButton.addEventListener('click', () => {
+        fillHint(selectedCategory, gridSize);
+    });
 
     // Show Initialization Screen
     startGameButton.addEventListener('click', () => {
@@ -62,7 +69,7 @@ $(document).ready(function() {
 
     function fillHint(category, gridSize) {
 
-        $.get('/get-hint/' + category, function(data) {
+        $.get('/get-hint/' + category, function (data) {
             hint = JSON.parse(data);
             $("#hint").text(hint['hintText']);
             generateGrid(gridSize, hint['id'], category);
@@ -75,24 +82,24 @@ $(document).ready(function() {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
 
-        $.get('/get-images/' + hint_id + "/" + category + '/' + (size * size), function(data) {
+        $.get('/get-images/' + hint_id + "/" + category + '/' + (size * size), function (data) {
             gridContainer.innerHTML = ''; // Clear previous grid
 
             let images = JSON.parse(data);
 
             console.log(images);
-    
+
 
             for (let i = 1; i <= size * size; i++) {
 
                 const button = document.createElement('button');
                 button.className = 'grid-button';
                 button.textContent = i; // Placeholder for button text
-                
+
                 // Zet de afbeelding om naar een <img> element
                 let image = document.createElement('img');
-                image.src = "data:image/jpg;base64," + images[i-1]['image'];
-                image.setAttribute('data-id', images[i-1]['id']);
+                image.src = "data:image/jpg;base64," + images[i - 1]['image'];
+                image.setAttribute('data-id', images[i - 1]['id']);
                 image.className = 'grid-image';
 
                 image.addEventListener('click', () => {
@@ -108,7 +115,7 @@ $(document).ready(function() {
         //     url: '/get-images/' + category,
         //     type: 'GET',
         //     beforeSend: function() {
-                
+
         //         // Laat "Loading images..." zien totdat de afbeeldingen zijn geladen
         //         gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
 
@@ -116,14 +123,14 @@ $(document).ready(function() {
         //     success: function(data) {
 
         //         gridContainer.innerHTML = ''; // Clear previous grid
-                
+
         //         let images = JSON.parse(data);
 
         //         for (let i = 1; i <= size * size; i++) {
         //             const button = document.createElement('button');
         //             button.className = 'grid-button';
         //             button.textContent = i; // Placeholder for button text
-                    
+
         //             // Zet de afbeelding om naar een <img> element
         //             let image = document.createElement('img');
         //             image.src = "data:image/jpg;base64," + images[i-1];
@@ -147,13 +154,13 @@ $(document).ready(function() {
     function checkSelection(hint_id) {
         const selectedImageIds = Array.from(document.querySelectorAll('.grid-image.active-image'))
             .map(img => parseInt(img.getAttribute('data-id')));
-    
+
         if (selectedImageIds.length === 0) {
             alert('No images selected!');
             return;
         }
 
-        
+
         $.ajax({
             url: '/validate-selection',
             type: 'POST',
@@ -189,9 +196,9 @@ $(document).ready(function() {
             console.error("Er ging iets mis bij het ophalen van de hint.");
         });
     });
-    
 
-    $("#hint-input-form").on("submit", function(event) {
+
+    $("#hint-input-form").on("submit", function (event) {
         event.preventDefault();
         let hint = $("#hint-input").val();
 
@@ -201,7 +208,7 @@ $(document).ready(function() {
         }
 
         let imageIds = [];
-        $(".grid-image").each(function() {
+        $(".grid-image").each(function () {
             if ($(this).hasClass("active-image")) {
                 imageIds.push($(this).data('id'));
             }
@@ -212,7 +219,7 @@ $(document).ready(function() {
             return;
         }
 
-        $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function() {});
+        $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function () { });
 
         $("#hint-input").val('');
         $(".grid-image").removeClass('active-image');

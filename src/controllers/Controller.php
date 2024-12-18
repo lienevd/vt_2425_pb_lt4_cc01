@@ -86,12 +86,4 @@ final class Controller
         return new Response(ResponseTypeEnum:: BAD_REQUEST, 'An error occurred while validating the selection.');
     }
     }
-
-    public function restartHint(): Response
-    {
-        $hintModel = new HintModel();
-        $newHint = ucfirst($hintModel->getHint($_POST['category']));
-        $_SESSION['game_data']['current_hint'] = $newHint;
-        return new Response(ResponseTypeEnum::OK, json_encode(['hint' => $newHint]));
-    }
 }
