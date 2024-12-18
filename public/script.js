@@ -3,13 +3,18 @@ $(document).ready(function () {
     const startScreen = document.getElementById('start-screen');
     const initializationScreen = document.getElementById('initialization-screen');
     const gameScreen = document.getElementById('game-screen');
+    const hintScreen = document.getElementById('hint-screen');
     const startGameButton = document.getElementById('start-game-button');
     const startGridButton = document.getElementById('start-grid-button');
+    const addHintButton = document.getElementById('add-hint-button');
     const backToStartButton = document.getElementById('back-to-start');
     const backToInitializationButton = document.getElementById('back-to-initialization');
+    const backToStartFromHintButton = document.getElementById('back-to-start-from-hint');
     const categorySelect = document.getElementById('category-select');
+    const hintCategorySelect = document.getElementById('hint-category-select');
     const gameLengthSelect = document.getElementById('game-length');
     const gridContainer = document.getElementById('grid-container');
+    const hintGridContainer = document.getElementById('hint-grid-container');
     const checkSelectionButton = document.getElementById('check-selection');
     const restartGameButton = document.getElementById('restart-game-button');
 
@@ -37,9 +42,20 @@ $(document).ready(function () {
         fillHint(selectedCategory, gridSize);
     });
 
-    // Go Back to Start Screen
+    // Show Hint Screen
+    addHintButton.addEventListener('click', () => {
+        switchScreen(startScreen, hintScreen);
+        loadHintImages(hintCategorySelect.value);
+    });
+
+    // Go Back to Start Screen from Initialization
     backToStartButton.addEventListener('click', () => {
         switchScreen(initializationScreen, startScreen);
+    });
+
+    // Go Back to Start Screen from Hint Screen
+    backToStartFromHintButton.addEventListener('click', () => {
+        switchScreen(hintScreen, startScreen);
     });
 
     // Go Back to Initialization Screen
@@ -61,6 +77,16 @@ $(document).ready(function () {
         checkSelection(hint['id']);
     });
 
+    // Load images for hint screen when category changes
+    hintCategorySelect.addEventListener('change', () => {
+        loadHintImages(hintCategorySelect.value);
+    });
+
+    // Load images for hint screen when category changes
+    hintCategorySelect.addEventListener('change', () => {
+        loadHintImages(hintCategorySelect.value);
+    });
+
     // Switch between screens
     function switchScreen(current, next) {
         current.classList.remove('active');
@@ -74,7 +100,6 @@ $(document).ready(function () {
             $("#hint").text(hint['hintText']);
             generateGrid(gridSize, hint['id'], category);
         });
-
     }
 
     // Generate Grid
@@ -98,8 +123,8 @@ $(document).ready(function () {
 
                 // Zet de afbeelding om naar een <img> element
                 let image = document.createElement('img');
-                image.src = "data:image/jpg;base64," + images[i - 1]['image'];
-                image.setAttribute('data-id', images[i - 1]['id']);
+                image.src = `data:image/jpg;base64,${images[i-1]['image']}`;
+                image.setAttribute('data-id', images[i-1]['id']);
                 image.className = 'grid-image';
 
                 image.addEventListener('click', () => {
@@ -108,23 +133,18 @@ $(document).ready(function () {
 
                 gridContainer.appendChild(image);
             }
+        }).fail(function() {
+            alert("Failed to load images.");
         });
+    }
 
-        // Get request om afbeeldingen op te halen
-        // $.ajax({
-        //     url: '/get-images/' + category,
-        //     type: 'GET',
-        //     beforeSend: function() {
+    function loadHintImages(category) {
+        hintGridContainer.innerHTML = '<div class="loader">Loading images...</div>';
 
-        //         // Laat "Loading images..." zien totdat de afbeeldingen zijn geladen
-        //         gridContainer.innerHTML = '<div class="loader">Loading images...</div>';
-
-        //     },
-        //     success: function(data) {
-
-        //         gridContainer.innerHTML = ''; // Clear previous grid
-
-        //         let images = JSON.parse(data);
+        $.get(`/get-images/${category}`, function(data) {
+            hintGridContainer.innerHTML = ''; // Clear previous grid
+                
+            let images = JSON.parse(data);
 
         //         for (let i = 1; i <= size * size; i++) {
         //             const button = document.createElement('button');
@@ -148,7 +168,7 @@ $(document).ready(function () {
         //         console.log(error);
         //     },
         // });
-
+        });
     }
 
     function checkSelection(hint_id) {
@@ -219,10 +239,11 @@ $(document).ready(function () {
             return;
         }
 
-        $.post('/add-hint', { hint: hint, category: selectedCategory, imageIds: imageIds }, function () { });
-
-        $("#hint-input").val('');
-        $(".grid-image").removeClass('active-image');
-
+        $.post('/add-hint', { hint: hint, category: hintCategorySelect.value, imageIds: imageIds }, function() {
+            $("#hint-input").val('');
+            $(".grid-image").removeClass('active-image');
+        }).fail(function() {
+            alert("Failed to add hint.");
+        });
     });
 });
