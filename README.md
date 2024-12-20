@@ -19,6 +19,7 @@ Volg deze stappen om Clue Capture te installeren:
     ```
 
 3. Kopieer local-settings.dist.php naar local-settings.php:
+
     #### Linux:
     ```bash
     cp local-settings.dist.php local-settings.php
