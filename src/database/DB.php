@@ -12,18 +12,11 @@ class DB
 {
     protected $connection;
     protected bool|PDOStatement $statement;
+    private static ?self $instance = null;
 
-    public function __construct(
+    private function __construct(
         private bool $testing = false
     ) {
-        $this->connect();
-    }
-
-    /**
-     * @return void
-     */
-    private function connect(): void
-    {
         if (!$this->testing) {
             $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8';
             $username = DB_USER;
@@ -40,6 +33,18 @@ class DB
         } catch (PDOException $e) {
             echo 'Connection failed: ' . $e->getMessage();
         }
+    }
+
+    /**
+     * @return self
+     */
+    public static function connect(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -135,5 +140,10 @@ class DB
     public function rowCount(): int
     {
         return $this->statement->rowCount();
+    }
+
+    public function getLastInsertId(): int
+    {
+        return $this->connection->lastInsertId();
     }
 }

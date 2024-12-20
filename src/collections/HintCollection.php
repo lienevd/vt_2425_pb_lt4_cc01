@@ -4,15 +4,14 @@ namespace Src\Collections;
 
 use Src\Enums\PHPTypes;
 
-class ImageCollection extends AbstractCollection
+class HintCollection extends AbstractCollection
 {
     protected function configure(): void
     {
         $this->setStructure([
             'id' => ['type' => PHPTypes::INT],
-            'image' => ['type' => PHPTypes::STR],
-            'category' => ['type' => PHPTypes::STR],
-            'category_id' => ['type' => PHPTypes::INT]
+            'hintText' => ['type' => PHPTypes::STR],
+            'category' => ['type' => PHPTypes::STR]
         ]);
     }
 

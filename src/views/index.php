@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clue Catcher</title>
+    <title>Clue Capture</title>
     <link rel="stylesheet" href="/public/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <!-- Start Screen -->
     <div id="start-screen" class="screen active">
         <h1>Clue Capture</h1>
         <button id="start-game-button">Start spel</button>
+        <button id="add-hint-button">Hints toevoegen</button>
     </div>
 
     <!-- Initialization Screen -->
@@ -38,11 +41,31 @@
         <button class="back-button" id="back-to-initialization">↰</button>
         <div id="hint-container">
             <label>Hint:</label>
-            <span id="hint">Meow</span>
+            <span id="hint"></span>
+            <button class="check-selection-button" id="check-selection">Check selectie</button>
         </div>
         <div id="grid-container"></div>
+        <!-- restart game button-->
+        <button id="restart-game-button">Restart Game</button>
+        
+    <!-- Hint Screen -->
+    <div id="hint-screen" class="screen">
+        <button class="back-button" id="back-to-start-from-hint">↰</button>
+        <h2>Voeg een hint toe</h2>
+        <label for="hint-category-select">Categorie:</label>
+        <select id="hint-category-select">
+            <option value="dieren">Dieren</option>
+            <option value="kunst">Kunst</option>
+            <option value="technologie">Technologie</option>
+        </select>
+        <form id="hint-input-form">
+            <input type="text" id="hint-input" placeholder="Voer een hint in">
+            <button type="submit">Hint toevoegen</button>
+        </form>
+        <div id="hint-grid-container" class="horizontal-scroll"></div>
     </div>
 
     <script src="/public/script.js"></script>
 </body>
+
 </html>
