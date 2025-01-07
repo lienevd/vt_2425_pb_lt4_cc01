@@ -68,13 +68,6 @@ $(document).ready(function () {
     checkSelectionButton.addEventListener('click', () => {
         console.log('Hint ID:', hint['id']);
         checkSelection(hint['id']);
-        gridContainer.innerHTML = ''; // Clear grid
-        $("#hint").text(''); // Clear hint
-    });
-
-    checkSelectionButton.addEventListener('click', () => {
-        console.log('Hint ID:', hint['id']);
-        checkSelection(hint['id']);
     });
 
     // Load images for hint screen when category changes
@@ -175,6 +168,9 @@ $(document).ready(function () {
         const selectedImageIds = Array.from(document.querySelectorAll('.grid-image.active-image'))
             .map(img => parseInt(img.getAttribute('data-id')));
 
+
+        console.log('Selected image IDs:', selectedImageIds);
+        
         if (selectedImageIds.length === 0) {
             alert('No images selected!');
             return;
